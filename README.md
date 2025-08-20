@@ -122,10 +122,9 @@ This project is licensed under the MIT License. See `LICENSE` for details.
 - TensorFlow Lite model conversion: https://www.tensorflow.org/lite/convert
 - ONNX docs: https://onnx.ai/
 - PhysioNet ECG databases: https://physionet.org/
-- README (this repo): ./README.md
-- License (MIT): ./LICENSE
-- Contribution Guidelines: ./CONTRIBUTING.md
-- Examples: ./examples/
+- License (MIT): [LICENSE](./LICENSE)
+- Contribution Guidelines: [CONTRIBUTING.md](./CONTRIBUTING.md)
+- Examples: [examples/](./examples/)
 
 ## Contact 📫
 
