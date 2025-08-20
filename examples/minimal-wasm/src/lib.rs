@@ -4,5 +4,5 @@ use wasm_bindgen::prelude::*;
 /// Build with: `wasm-pack build --target web`
 #[wasm_bindgen]
 pub fn detect_anomaly(value: f32) -> bool {
-    value > 100.0
+    value > 0.5
 }

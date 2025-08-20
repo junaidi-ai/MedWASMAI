@@ -20,15 +20,21 @@ async function main() {
 }
 
 runBtn.addEventListener("click", () => {
-  const v = parseFloat(valEl.value);
-  if (Number.isNaN(v)) {
-    outEl.textContent = "Please enter a number";
+  try {
+    const v = parseFloat(valEl.value);
+    if (Number.isNaN(v)) {
+      outEl.textContent = "Please enter a number";
+      outEl.className = "warn";
+      return;
+    }
+    const res = detect_anomaly(v);
+    outEl.textContent = res ? `Anomaly detected at ${v}` : `No anomaly at ${v}`;
+    outEl.className = res ? "warn" : "ok";
+  } catch (err) {
+    console.error("WASM call failed:", err);
+    outEl.textContent = "Error running detection. See console.";
     outEl.className = "warn";
-    return;
   }
-  const res = detect_anomaly(v);
-  outEl.textContent = res ? `Anomaly detected at ${v}` : `No anomaly at ${v}`;
-  outEl.className = res ? "warn" : "ok";
 });
 
 main();

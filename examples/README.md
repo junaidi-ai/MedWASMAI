@@ -1,5 +1,7 @@
 # Examples
 
+![Demo](./minimal-wasm/public/Minimal_Wasm_Demo.png)
+
 This directory contains example projects for MedWASMAI.
 
 - `minimal-wasm/`: A minimal Rust + wasm-bindgen project you can build with `wasm-pack`.
