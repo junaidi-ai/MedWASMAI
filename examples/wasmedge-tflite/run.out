@@ -1,0 +1,5 @@
+[2025-08-20T04:55:33Z INFO  wasmedge_tflite_example] args: Args { model: None, input: "0.1,0.2,0.3,0.4", plugin_dir: None, force_mock: true }
+[2025-08-20T04:55:33Z WARN  wasmedge_tflite_example] no model provided; mock path will be used if running mock inference
+[2025-08-20T04:55:33Z INFO  wasmedge_tflite_example] running mock inference (forced)
+[2025-08-20T04:55:33Z INFO  wasmedge_tflite_example] inference path: mock | latency: 75.925µs
+Inference result: [0.19737533, 0.37994897, 0.5370496, 0.66403675]

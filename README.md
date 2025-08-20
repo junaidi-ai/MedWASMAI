@@ -51,7 +51,17 @@ wasm-pack build --target web
 
 ### Edge runtime demo (WasmEdge) ▶️
 
-Coming soon. We plan to provide a WasmEdge-based CLI example for running TFLite/ONNX models at the edge.
+A CLI scaffold is available under `examples/wasmedge-tflite/`.
+
+Quick start (mock inference):
+
+```bash
+cd examples/wasmedge-tflite
+cargo build
+RUST_LOG=info ./target/debug/wasmedge-tflite-example --force-mock --input "0.1,0.2,0.3,0.4"
+```
+
+See `examples/wasmedge-tflite/README.md` for enabling the real path, model usage, and plugin configuration.
 
 ### Browser demo 🌐
 
@@ -73,24 +83,12 @@ Open http://localhost:8080 in a browser, then click "Run".
 
 ## Example: Heart Rate Anomaly Detection ❤️
 
-This example compiles a simple ML model to WASM for detecting anomalies in heart rate data on an IoMT device.
+This repository includes a browser demo and an edge CLI scaffold:
 
-1. Train a lightweight model (e.g., using TensorFlow Lite) on a dataset like PhysioNet ECG.
-2. Convert the model to WASM using wasm-pack and integrate with Rust.
-3. Run inference on an edge device:
+- Browser: `examples/minimal-wasm/` (wasm-bindgen)
+- Edge (WasmEdge + TFLite scaffold): `examples/wasmedge-tflite/`
 
-```rust
-use wasmedge_tensorflow_lite::*;
-
-fn main() {
-    let model = include_bytes!("heart_rate_model.tflite");
-    let input = vec![/* heart rate data */];
-    let output = run_inference(model, &input);
-    println!("Anomaly detected: {:?}", output);
-}
-```
-
-See the `examples/` directory for complete code and setup.
+For edge execution, place a `.tflite` model under `examples/wasmedge-tflite/models/` and follow that README. The scaffold logs inference latency and provides error handling; the real TFLite path is feature-gated to keep the example runnable on any machine by default.
 
 ## Troubleshooting 🧯
 
@@ -116,6 +114,7 @@ See the `examples/` directory for complete code and setup.
 
 - `examples/` — Example projects
   - `minimal-wasm/` — Minimal Rust + wasm-bindgen demo (browser)
+  - `wasmedge-tflite/` — WasmEdge + TFLite CLI scaffold (edge)
 - `LICENSE` — MIT license
 - `CONTRIBUTING.md` — How to contribute
 - `.windsurf/`, `.cursor/`, `.taskmaster/` — Dev tooling configs
@@ -123,7 +122,7 @@ See the `examples/` directory for complete code and setup.
 ## Supported Runtimes 🧩
 
 - Browser (wasm-bindgen + ES modules)
-- WasmEdge (planned)
+- WasmEdge (example available in `examples/wasmedge-tflite/`)
 - Wasmtime (planned)
 
 ## Architecture Overview 🏗️

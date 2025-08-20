@@ -1,0 +1,6 @@
+# Rust build artifacts
+/target/
+
+# Model files (optional to ignore large downloads)
+# Uncomment if you don't want to commit models
+# /models/*.tflite

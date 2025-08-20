@@ -1,0 +1,18 @@
+[package]
+name = "wasmedge-tflite-example"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0"
+clap = { version = "4.5", features = ["derive", "env"] }
+log = "0.4"
+env_logger = "0.11"
+wasmedge-sdk = { version = "0.14", optional = true }
+
+[features]
+# By default we run a mock inference so this example is runnable without the TFLite plugin.
+# Enable `real-inference` once your environment has WasmEdge built with the TFLite plugin and
+# you have a proper guest module using wasi-nn or compatible bindings.
+default = []
+real-inference = ["wasmedge-sdk"]
