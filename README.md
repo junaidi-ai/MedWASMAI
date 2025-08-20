@@ -30,7 +30,7 @@ cargo install wasm-pack
 curl -sSf https://raw.githubusercontent.com/WasmEdge/WasmEdge/master/utils/install.sh | bash
 ```
 
-- Node.js (optional): For browser-based demos, install Node.js 16+.
+- Node.js (optional): For browser-based demos, install Node.js 20+ (22 recommended).
 - Python (optional): For ML model preparation (e.g., TensorFlow Lite, ONNX).
 - Hardware: Raspberry Pi or similar for IoMT testing (optional).
 
@@ -49,20 +49,21 @@ cd MedWASMAI
 wasm-pack build --target web
 ```
 
-### Run a demo (e.g., heart rate anomaly detection) ▶️
+### Edge runtime demo (WasmEdge) ▶️
 
-```bash
-wasmedge --dir .:. pkg/medwasmai.wasm
-```
+Coming soon. We plan to provide a WasmEdge-based CLI example for running TFLite/ONNX models at the edge.
 
 ### Browser demo 🌐
 
+Build the minimal example and serve over HTTP:
+
 ```bash
-npm install
-npm start
+cd examples/minimal-wasm
+wasm-pack build --target web
+python3 -m http.server 8080
 ```
 
-Open http://localhost:8080 in a browser to see the demo.
+Open http://localhost:8080 in a browser, then click "Run".
 
 ## Example: Heart Rate Anomaly Detection ❤️
 
@@ -84,6 +85,53 @@ fn main() {
 ```
 
 See the `examples/` directory for complete code and setup.
+
+## Troubleshooting 🧯
+
+- wasm-pack not found:
+  - Install: `cargo install wasm-pack`
+  - Ensure `~/.cargo/bin` is on your PATH.
+- Node version issues / CLI warnings:
+  - Use Node 22 via nvm:
+    ```bash
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+    nvm use 22
+    ```
+- Browser demo doesn’t load WASM:
+  - Build first: `cd examples/minimal-wasm && wasm-pack build --target web`
+  - Serve over HTTP: `python3 -m http.server 8080` from `examples/minimal-wasm/`
+  - Open http://localhost:8080 and check the JS console for errors.
+- MIME/CORS errors when serving:
+  - Prefer `python3 -m http.server` (Python 3) or any static server that serves `.wasm` with `application/wasm`.
+  - Hard-refresh (Ctrl/Cmd+Shift+R) to clear cache.
+
+## Repository Structure 📁
+
+- `examples/` — Example projects
+  - `minimal-wasm/` — Minimal Rust + wasm-bindgen demo (browser)
+- `LICENSE` — MIT license
+- `CONTRIBUTING.md` — How to contribute
+- `.windsurf/`, `.cursor/`, `.taskmaster/` — Dev tooling configs
+
+## Supported Runtimes 🧩
+
+- Browser (wasm-bindgen + ES modules)
+- WasmEdge (planned)
+- Wasmtime (planned)
+
+## Architecture Overview 🏗️
+
+- Core: Rust crates compiled to WebAssembly (cdylib)
+- Bindings: wasm-bindgen for browser interoperability
+- Runtimes: Browser today; WasmEdge/Wasmtime roadmapped for edge/server
+- Model formats: TensorFlow Lite, ONNX (via runtime-specific adapters)
+
+## Security & Privacy 🔐
+
+- Privacy-first: aim to process sensitive signals locally when feasible
+- Sandbox: WASM provides isolation boundaries for safer plugin execution
+- Compliance: roadmap items target HIPAA/GDPR-aligned data flows; contributors should avoid committing PHI and follow least-privilege principles
 
 ## Contributing 🤝
 

@@ -1,0 +1,98 @@
+Title: MedWASMAI – Edge AI for Healthcare via WebAssembly (WASM) and Rust
+Owner: Junaidi AI
+Date: 2025-08-20
+Status: Draft
+
+1) Summary
+MedWASMAI enables privacy-preserving, low-latency ML inference for IoMT and healthcare on constrained devices using Rust-compiled WebAssembly. The project targets both browser and edge runtimes, starting with a minimal wasm-bindgen browser demo and expanding to WasmEdge/Wasmtime for on-device/server-side execution.
+
+2) Problem & Goals
+- Problem: Healthcare/IoMT scenarios require local, secure, near-real-time ML inference without always relying on cloud connectivity. Existing stacks are complex, non-portable, or unsafe.
+- Goals:
+  • Provide a safe, portable WASM-based Rust framework for ML inference at the edge.
+  • Offer examples for browser and edge runtimes, with adapters for TFLite/ONNX.
+  • Emphasize privacy-first design and compliance-aligned data handling patterns.
+
+3) Non-Goals (Phase 1)
+- Training pipelines (cloud/offline) beyond simple conversion docs.
+- Large model optimization toolchains (quantization/pruning) built in-repo.
+- Production-ready PHI/PII compliance tooling (docs and patterns only at first).
+
+4) Target Users & Use Cases
+- IoMT developers building on-device analytics: anomaly detection for vital signs, fall detection, lightweight signal processing.
+- Healthcare integrators needing browser-based demos/prototypes with local inference.
+
+5) Scope (MVP → Next)
+MVP
+- Minimal Rust + wasm-bindgen browser demo exposing a simple function (in progress).
+- Clear developer docs: prerequisites, build steps, repo structure, security notes (in progress).
+- Examples folder and scaffolding (in progress).
+
+Next
+- WasmEdge example for TFLite/ONNX inference at the edge (CLI-driven demo).
+- Wasmtime parity example (optional if WasmEdge lands first).
+- Abstractions for loading model blobs and executing inference in WASM safely.
+
+6) Technical Overview
+- Language/runtime: Rust targeting `cdylib` + wasm-bindgen (browser). Planned adapters for WasmEdge/Wasmtime.
+- Model support: TFLite and ONNX via runtime-specific plugins/bindings.
+- Security: WASM sandboxing, local-first processing, HIPAA/GDPR-aligned patterns.
+- Tooling: wasm-pack for build, simple HTTP server for demo. Node 22 recommended.
+- Repo structure: `examples/minimal-wasm` (browser demo), future `examples/wasmedge-*`.
+
+7) Architecture & APIs (Initial)
+- Core crate: exposes simple, deterministic functions to WASM boundary (e.g., `detect_anomaly(f32) -> bool`).
+- Browser binding: wasm-bindgen-generated JS module `pkg/*.js` with ES module import.
+- Planned edge binding: Rust binary or host interface to load WASM module + model assets under WasmEdge/Wasmtime.
+
+8) Milestones & Deliverables
+M1 (in progress):
+- README improvements, minimal browser demo, related docs/links, CONTRIBUTING, LICENSE.
+
+  Remaining to complete M1:
+  - Verify minimal browser demo works end-to-end from a fresh clone:
+    - `cd examples/minimal-wasm && wasm-pack build --target web`
+    - `python3 -m http.server 8080`, open http://localhost:8080 and click "Run" to see expected result.
+  - Expand README with Troubleshooting:
+    - Install wasm-pack; ensure Node 22 via nvm; clear browser cache; correct MIME types when serving.
+  - Optional: add a simple verify script/Makefile target to automate the above.
+
+  Acceptance criteria (M1):
+  - On Node 22, a new developer can build and run the browser demo in ≤ 10 minutes.
+  - Demo interaction shows correct output without console errors.
+  - README includes a Troubleshooting section covering common setup pitfalls.
+
+M2 (edge runtime):
+- WasmEdge example to load model and run inference; documentation and scripts.
+- ONNX and/or TFLite adapter PoC.
+
+M3 (DX + Quality):
+- wasm-bindgen-test for unit tests in WASM.
+- CI to build and lint examples.
+
+9) Success Metrics
+- Dev onboarding ≤ 10 minutes to run browser demo.
+- Edge demo runs simple model with ≤ 150ms median inference on Raspberry Pi-class device.
+- Documentation satisfaction via GitHub issues/feedback.
+
+10) Risks & Mitigations
+- Runtime compatibility drift (WasmEdge/Wasmtime): Pin tested versions; document matrix.
+- Model format variance (ops coverage): Start with small models; document supported ops.
+- Privacy/compliance ambiguity: Provide patterns and disclaimers; avoid PHI in repo.
+
+11) Dependencies
+- Rust stable, wasm-pack, Node 20+ (22 recommended), Python (for serving/demo convenience), WasmEdge/Wasmtime for edge milestones.
+
+12) Acceptance Criteria (M2)
+- `examples/wasmedge-*/` runs a minimal TFLite or ONNX model end-to-end locally.
+- README includes edge demo instructions and troubleshooting.
+- Basic benchmarks documented (device, model, latency).
+
+13) Out of Scope (for now)
+- Federated learning orchestration.
+- Full encryption-at-rest/in-use story (beyond runtime isolation and patterns).
+
+14) Glossary
+- IoMT: Internet of Medical Things.
+- WASM: WebAssembly, a portable low-level bytecode with sandboxing.
+- TFLite/ONNX: Lightweight model formats for inference.
