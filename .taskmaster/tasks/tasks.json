@@ -1,0 +1,145 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "[M1] Complete Minimal Browser Demo Setup",
+        "description": "Verify and finalize the minimal browser demo using Rust and wasm-bindgen to ensure it works end-to-end from a fresh clone.",
+        "details": "1. Navigate to `examples/minimal-wasm`\n2. Ensure the demo exposes a simple function via wasm-bindgen\n3. Verify build process: `wasm-pack build --target web`\n4. Test serving with Python: `python3 -m http.server 8080`\n5. Verify the demo works in browser at http://localhost:8080\n6. Ensure the 'Run' button triggers the expected result\n7. Fix any console errors or unexpected behaviors\n8. Implement proper error handling for the WASM function calls\n\nCode structure should follow:\n```rust\n// lib.rs\nuse wasm_bindgen::prelude::*;\n\n#[wasm_bindgen]\npub fn detect_anomaly(value: f32) -> bool {\n    // Simple implementation for demo\n    value > 0.5\n}\n```",
+        "testStrategy": "1. Manual verification that demo builds and runs without errors\n2. Test with different browsers (Chrome, Firefox, Safari)\n3. Verify correct output is displayed when clicking 'Run'\n4. Test with Node 22 as recommended in the PRD\n5. Verify WASM module loads correctly in browser console",
+        "priority": "high",
+        "dependencies": [],
+        "status": "in_progress",
+        "subtasks": []
+      },
+      {
+        "id": 2,
+        "title": "[M1] Enhance Project Documentation",
+        "description": "Improve README with comprehensive documentation including prerequisites, build steps, repository structure, and troubleshooting guidance.",
+        "details": "1. Update README.md with:\n   - Project overview and purpose\n   - Prerequisites (Rust stable, wasm-pack, Node 22, Python)\n   - Installation instructions\n   - Build steps for browser demo\n   - Repository structure explanation\n   - Security notes and privacy considerations\n2. Create a detailed Troubleshooting section covering:\n   - wasm-pack installation issues\n   - Node version management with nvm\n   - Browser cache clearing instructions\n   - MIME type configuration for serving WASM\n   - Common build errors and solutions\n3. Add CONTRIBUTING.md with development guidelines\n4. Include LICENSE file\n5. Document security considerations for healthcare data\n\nExample troubleshooting entry:\n```markdown\n### Common Issues\n\n#### WASM not loading in browser\nEnsure your server is configured to serve `.wasm` files with the correct MIME type: `application/wasm`. When using Python's simple HTTP server, this should work automatically.\n```",
+        "testStrategy": "1. Have a new developer follow the documentation to verify onboarding takes ≤10 minutes\n2. Review for clarity, completeness, and accuracy\n3. Verify all links work\n4. Ensure troubleshooting section addresses common issues identified during testing",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 3,
+        "title": "[M1] Create Verification Script",
+        "description": "Develop a script or Makefile target to automate the verification of the browser demo setup and execution.",
+        "details": "1. Create a verification script that:\n   - Checks for required dependencies (Rust, wasm-pack, Node, Python)\n   - Builds the WASM module\n   - Starts a local server\n   - Opens the browser to the demo page (if possible)\n   - Provides clear success/failure output\n\nExample Makefile target:\n```makefile\n.PHONY: verify-browser-demo\n\nverify-browser-demo:\n\t@echo \"Checking dependencies...\"\n\t@command -v rustc >/dev/null 2>&1 || { echo \"Rust not installed\"; exit 1; }\n\t@command -v wasm-pack >/dev/null 2>&1 || { echo \"wasm-pack not installed\"; exit 1; }\n\t@command -v node >/dev/null 2>&1 || { echo \"Node not installed\"; exit 1; }\n\t@command -v python3 >/dev/null 2>&1 || { echo \"Python not installed\"; exit 1; }\n\t@echo \"Building WASM module...\"\n\tcd examples/minimal-wasm && wasm-pack build --target web\n\t@echo \"Demo built successfully. Run 'cd examples/minimal-wasm && python3 -m http.server 8080' and open http://localhost:8080 in your browser.\"\n```\n\nAlternatively, create a shell script with similar functionality.",
+        "testStrategy": "1. Test script on different operating systems (Linux, macOS, Windows with WSL)\n2. Verify script correctly identifies missing dependencies\n3. Ensure script provides clear error messages and instructions\n4. Test with both successful and failing scenarios",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 4,
+        "title": "[M2] Implement WasmEdge Example with TFLite Support",
+        "description": "Create a WasmEdge example that demonstrates loading and running inference with a TensorFlow Lite model.",
+        "details": "1. Create directory structure: `examples/wasmedge-tflite/`\n2. Set up Rust project with necessary dependencies:\n   - `wasmedge-sdk` for WasmEdge runtime integration\n   - `wasmedge-tensorflow-lite` for TFLite support\n3. Implement model loading functionality:\n```rust\nuse wasmedge_sdk::*;\nuse wasmedge_tensorflow_lite::*;\n\nfn main() -> Result<(), Box<dyn std::error::Error>> {\n    // Initialize WasmEdge runtime with TFLite plugin\n    let mut config = Config::create()?;\n    config.add_plugin_dir(\"path/to/plugins\")?;\n    \n    let mut vm = Vm::create(Some(config), None)?;\n    \n    // Load TFLite model\n    let model_data = std::fs::read(\"models/simple_model.tflite\")?;\n    let model = TFLiteModel::new(&model_data)?;\n    \n    // Prepare input data\n    let input_data: Vec<f32> = vec![0.1, 0.2, 0.3, 0.4];\n    \n    // Run inference\n    let output = model.run(&input_data)?;\n    \n    println!(\"Inference result: {:?}\", output);\n    \n    Ok(())\n}\n```\n4. Include a simple TFLite model for testing\n5. Add build and run instructions in README\n6. Implement proper error handling and logging",
+        "testStrategy": "1. Verify build process works with WasmEdge dependencies\n2. Test with a simple TFLite model (e.g., anomaly detection)\n3. Measure and document inference latency\n4. Test on Raspberry Pi or similar edge device\n5. Verify error handling for missing models or invalid inputs",
+        "priority": "high",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "[M2] Implement ONNX Model Support for WasmEdge",
+        "description": "Extend the WasmEdge example to support ONNX model format for inference at the edge.",
+        "details": "1. Create directory structure: `examples/wasmedge-onnx/`\n2. Set up Rust project with necessary dependencies:\n   - `wasmedge-sdk` for WasmEdge runtime\n   - `wasmedge-onnx` or appropriate ONNX runtime binding\n3. Implement model loading and inference:\n```rust\nuse wasmedge_sdk::*;\n// Use appropriate ONNX runtime binding\n\nfn main() -> Result<(), Box<dyn std::error::Error>> {\n    // Initialize WasmEdge runtime with ONNX plugin\n    let mut config = Config::create()?;\n    config.add_plugin_dir(\"path/to/plugins\")?;\n    \n    let mut vm = Vm::create(Some(config), None)?;\n    \n    // Load ONNX model\n    let model_data = std::fs::read(\"models/simple_model.onnx\")?;\n    let model = OnnxModel::new(&model_data)?;\n    \n    // Prepare input data\n    let input_data: Vec<f32> = vec![0.1, 0.2, 0.3, 0.4];\n    \n    // Run inference\n    let output = model.run(&input_data)?;\n    \n    println!(\"Inference result: {:?}\", output);\n    \n    Ok(())\n}\n```\n4. Include a simple ONNX model for testing\n5. Add build and run instructions in README\n6. Document supported ONNX operators and limitations",
+        "testStrategy": "1. Verify build process works with ONNX dependencies\n2. Test with a simple ONNX model (e.g., anomaly detection)\n3. Measure and document inference latency\n4. Test on Raspberry Pi or similar edge device\n5. Compare performance with TFLite implementation",
+        "priority": "medium",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 6,
+        "title": "[M3] Create Wasmtime Parity Example",
+        "description": "Implement a Wasmtime example that provides similar functionality to the WasmEdge example for broader runtime support.",
+        "details": "1. Create directory structure: `examples/wasmtime-inference/`\n2. Set up Rust project with necessary dependencies:\n   - `wasmtime` for runtime\n   - Appropriate model inference libraries\n3. Implement model loading and inference:\n```rust\nuse wasmtime::*;\n\nfn main() -> Result<(), Box<dyn std::error::Error>> {\n    // Initialize Wasmtime runtime\n    let engine = Engine::default();\n    let mut store = Store::new(&engine, ());\n    \n    // Load WASM module that implements inference\n    let module = Module::from_file(&engine, \"inference.wasm\")?;\n    let instance = Instance::new(&mut store, &module, &[])?;\n    \n    // Get exported function\n    let run_inference = instance.get_func(&mut store, \"run_inference\")\n        .ok_or(\"function not found\")?;\n    \n    // Prepare input data\n    let input_data: Vec<f32> = vec![0.1, 0.2, 0.3, 0.4];\n    \n    // Run inference\n    let result = run_inference.call(&mut store, &[Val::from(input_data)])?;\n    \n    println!(\"Inference result: {:?}\", result);\n    \n    Ok(())\n}\n```\n4. Create a separate WASM module that implements the inference logic\n5. Add build and run instructions in README\n6. Document differences between WasmEdge and Wasmtime approaches",
+        "testStrategy": "1. Verify build process works with Wasmtime dependencies\n2. Test with the same models used in WasmEdge examples\n3. Measure and document inference latency\n4. Compare performance with WasmEdge implementation\n5. Test on the same edge devices for fair comparison",
+        "priority": "low",
+        "dependencies": [
+          4,
+          5
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 7,
+        "title": "[M2] Develop Model Loading Abstractions",
+        "description": "Create abstractions for safely loading model blobs and executing inference in WASM across different runtimes.",
+        "details": "1. Create a core crate with shared abstractions:\n```rust\n// src/lib.rs in core crate\npub trait ModelLoader {\n    type Error;\n    type Model;\n    \n    fn load_model(&self, data: &[u8]) -> Result<Self::Model, Self::Error>;\n}\n\npub trait InferenceEngine {\n    type Input;\n    type Output;\n    type Error;\n    \n    fn run_inference(&self, input: Self::Input) -> Result<Self::Output, Self::Error>;\n}\n\npub struct SafeModelContainer<M> {\n    model: M,\n    metadata: ModelMetadata,\n}\n\npub struct ModelMetadata {\n    format: String,\n    version: String,\n    input_shape: Vec<usize>,\n    output_shape: Vec<usize>,\n}\n```\n2. Implement these traits for different runtimes:\n   - Browser/wasm-bindgen\n   - WasmEdge\n   - Wasmtime\n3. Create utility functions for common operations\n4. Add documentation and examples for each abstraction\n5. Ensure proper error handling and resource management",
+        "testStrategy": "1. Write unit tests for each abstraction\n2. Test with different model formats (TFLite, ONNX)\n3. Verify memory safety with tools like Miri\n4. Test error handling for edge cases\n5. Benchmark performance overhead of abstractions",
+        "priority": "high",
+        "dependencies": [
+          4,
+          5
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 8,
+        "title": "[M3] Implement WASM Unit Testing",
+        "description": "Set up wasm-bindgen-test for unit testing in WASM to ensure code quality and correctness.",
+        "details": "1. Add wasm-bindgen-test to dependencies:\n```toml\n[dev-dependencies]\nwasm-bindgen-test = \"0.3\"\n```\n2. Create test files with WASM-specific tests:\n```rust\n// tests/web.rs\nuse wasm_bindgen_test::*;\nuse medwasmai::*;\n\nwasm_bindgen_test_configure!(run_in_browser);\n\n#[wasm_bindgen_test]\nfn test_detect_anomaly() {\n    assert_eq!(detect_anomaly(0.4), false);\n    assert_eq!(detect_anomaly(0.6), true);\n}\n```\n3. Set up test running infrastructure:\n   - Configure for both headless browsers and Node.js\n   - Add test commands to documentation\n4. Create tests for all public APIs\n5. Add test coverage reporting",
+        "testStrategy": "1. Run tests in both Node.js and browser environments\n2. Verify tests pass in CI environment\n3. Check test coverage for core functionality\n4. Test edge cases and error conditions\n5. Ensure tests are fast and reliable",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          7
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 9,
+        "title": "[M3] Set Up Continuous Integration",
+        "description": "Implement CI workflows to automatically build, lint, and test the project across different platforms.",
+        "details": "1. Create GitHub Actions workflow:\n```yaml\nname: CI\n\non:\n  push:\n    branches: [ main ]\n  pull_request:\n    branches: [ main ]\n\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v3\n      - name: Setup Rust\n        uses: actions-rs/toolchain@v1\n        with:\n          profile: minimal\n          toolchain: stable\n          override: true\n      - name: Install wasm-pack\n        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh\n      - name: Build browser demo\n        run: cd examples/minimal-wasm && wasm-pack build --target web\n      - name: Run tests\n        run: cargo test\n      - name: Lint\n        run: cargo clippy -- -D warnings\n```\n2. Add additional jobs for different platforms (Windows, macOS)\n3. Configure caching for faster builds\n4. Set up artifact storage for built WASM modules\n5. Add status badges to README",
+        "testStrategy": "1. Verify CI workflow by making test PRs\n2. Ensure all examples build successfully\n3. Check that linting catches common issues\n4. Test on different platforms to ensure compatibility\n5. Verify artifact generation and storage",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          3,
+          8
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 10,
+        "title": "[M3] Document Privacy and Compliance Patterns",
+        "description": "Create documentation on privacy-first design and compliance-aligned data handling patterns for healthcare applications.",
+        "details": "1. Create a dedicated document `PRIVACY_PATTERNS.md` covering:\n   - Local-first processing benefits for PHI/PII\n   - WASM sandboxing security properties\n   - Data minimization techniques\n   - HIPAA/GDPR considerations for edge AI\n   - Proper handling of sensitive data\n2. Include code examples demonstrating:\n```rust\n// Example of data minimization\nfn process_vital_signs(data: &VitalSigns) -> AnomalyResult {\n    // Only extract the minimum required features\n    let features = extract_minimal_features(data);\n    \n    // Process locally without storing raw data\n    let result = detect_anomalies(&features);\n    \n    // Only return the result, not the raw data\n    result\n}\n\n// Example of secure data handling\nfn handle_patient_data(data: &PatientData) -> Result<(), Error> {\n    // Validate data before processing\n    if !is_valid_data(data) {\n        return Err(Error::InvalidData);\n    }\n    \n    // Process in memory, no persistence\n    let result = process_data_securely(data);\n    \n    // Clear sensitive data from memory when done\n    std::mem::drop(data);\n    \n    Ok(())\n}\n```\n3. Add disclaimers about limitations and when to seek legal advice\n4. Include references to relevant regulations and standards\n5. Document secure deployment considerations",
+        "testStrategy": "1. Review by team members with healthcare compliance experience\n2. Verify code examples compile and follow best practices\n3. Check for clarity and completeness of guidance\n4. Ensure disclaimers are appropriate and visible\n5. Verify all references are current and accurate",
+        "priority": "medium",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-08-20T01:47:10.926Z",
+      "updated": "2025-08-20T01:47:10.926Z",
+      "description": "Tasks for master context"
+    }
+  }
+}
