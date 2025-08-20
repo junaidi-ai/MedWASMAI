@@ -55,7 +55,13 @@ Coming soon. We plan to provide a WasmEdge-based CLI example for running TFLite/
 
 ### Browser demo 🌐
 
-Build the minimal example and serve over HTTP:
+Quick verification (recommended):
+
+```bash
+make verify-browser-demo
+```
+
+Manual steps (alternative):
 
 ```bash
 cd examples/minimal-wasm
