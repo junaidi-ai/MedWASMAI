@@ -1,0 +1,15 @@
+[package]
+name = "wasmedge-onnx-example"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0"
+clap = { version = "4.5", features = ["derive", "env"] }
+log = "0.4"
+env_logger = "0.11"
+
+[features]
+# Mock by default; enable `real-inference` to wire a real ONNX path using WasmEdge + guest wasm.
+default = []
+real-inference = []

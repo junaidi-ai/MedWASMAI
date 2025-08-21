@@ -51,17 +51,21 @@ wasm-pack build --target web
 
 ### Edge runtime demo (WasmEdge) ▶️
 
-A CLI scaffold is available under `examples/wasmedge-tflite/`.
+CLI scaffolds are available under `examples/wasmedge-tflite/` and `examples/wasmedge-onnx/`.
 
 Quick start (mock inference):
 
 ```bash
-cd examples/wasmedge-tflite
-cargo build
+# TFLite
+cd examples/wasmedge-tflite && cargo build
 RUST_LOG=info ./target/debug/wasmedge-tflite-example --force-mock --input "0.1,0.2,0.3,0.4"
+
+# ONNX
+cd ../wasmedge-onnx && cargo build
+RUST_LOG=info ./target/debug/wasmedge-onnx-example --force-mock --input "0.1,0.2,0.3,0.4"
 ```
 
-See `examples/wasmedge-tflite/README.md` for enabling the real path, model usage, and plugin configuration.
+See `examples/wasmedge-tflite/README.md` and `examples/wasmedge-onnx/README.md` for enabling the real path, model usage, and plugin configuration.
 
 ### Browser demo 🌐
 
@@ -115,6 +119,7 @@ For edge execution, place a `.tflite` model under `examples/wasmedge-tflite/mode
 - `examples/` — Example projects
   - `minimal-wasm/` — Minimal Rust + wasm-bindgen demo (browser)
   - `wasmedge-tflite/` — WasmEdge + TFLite CLI scaffold (edge)
+  - `wasmedge-onnx/` — WasmEdge + ONNX CLI scaffold (edge)
 - `LICENSE` — MIT license
 - `CONTRIBUTING.md` — How to contribute
 - `.windsurf/`, `.cursor/`, `.taskmaster/` — Dev tooling configs

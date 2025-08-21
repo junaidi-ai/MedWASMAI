@@ -5,7 +5,8 @@
 This directory contains example projects for MedWASMAI.
 
 - `minimal-wasm/`: A minimal Rust + wasm-bindgen project you can build with `wasm-pack`.
- - `wasmedge-tflite/`: A Rust CLI scaffold to demonstrate running TensorFlow Lite inference with WasmEdge (mock by default; real path is feature-gated).
+- `wasmedge-tflite/`: A Rust CLI scaffold to demonstrate running TensorFlow Lite inference with WasmEdge (mock by default; real path is feature-gated).
+- `wasmedge-onnx/`: A Rust CLI scaffold to demonstrate running ONNX inference with WasmEdge (mock by default; real path is feature-gated).
 
 ## Build minimal-wasm
 
@@ -57,3 +58,18 @@ RUST_LOG=info ./target/debug/wasmedge-tflite-example --force-mock --input "0.1,0
 ```
 
 See `examples/wasmedge-tflite/README.md` for enabling the real path and using a `.tflite` model.
+
+## Build wasmedge-onnx
+
+```bash
+cd examples/wasmedge-onnx
+cargo build
+```
+
+Run mock inference with logs:
+
+```bash
+RUST_LOG=info ./target/debug/wasmedge-onnx-example --force-mock --input "0.1,0.2,0.3,0.4"
+```
+
+See `examples/wasmedge-onnx/README.md` for enabling the real path and using a `.onnx` model.
